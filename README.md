@@ -1,6 +1,7 @@
 # metaball
 metaball javascript计算
 
+## [demo地址](http://htmlpreview.github.io/?https://github.com/anderpang/metaball/blob/master/index.html)
 
 ```javascript
 //metaball数据
