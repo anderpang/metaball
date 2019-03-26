@@ -18,5 +18,7 @@ metaball javascript计算
       ctx.fill();     
   }
 ```  
+
+[img](https://github.com/anderpang/metaball/blob/master/1.gif?raw=true)
   
   
