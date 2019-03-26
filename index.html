@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>metaball</title>
+    <style>
+        canvas{border:1px solid #CCC;}
+    </style>
+</head>
+<body>
+    <canvas width="500" height="500"></canvas>
+    <script src="dat.gui.js"></script>
+    <script src="metaball.min.js"></script>
+    <script>
+         var cvs=document.querySelector("canvas"),
+             width=cvs.width,
+             height=cvs.height,
+             ctx=cvs.getContext("2d"),
+             centerX=width*0.5,
+             centerY=height*0.5;  
+
+        var circle1=new Circle(-20,5,25);
+        var circle2=new Circle(130,-55,55);
+        var params={
+            maxDistance:300
+        };
+
+        var gui=new dat.GUI();
+        gui.add(params,"maxDistance",100,400).onChange(draw);
+        gui.add(circle1,"x",-200,200).name("圆1.x").onChange(draw);
+        gui.add(circle1,"y",-200,200).name("圆1.y").onChange(draw);
+        gui.add(circle1,"radius",1,100).name("圆1半径").onChange(draw);
+
+        gui.add(circle2,"x",-200,200).name("圆2.x").onChange(draw);
+        gui.add(circle2,"y",-200,200).name("圆2.y").onChange(draw);
+        gui.add(circle2,"radius",1,100).name("圆2半径").onChange(draw);
+
+
+        function draw(){
+            ctx.clearRect(0,0,width,height);
+            ctx.save();
+            ctx.translate(centerX,centerY);
+
+            circle1.draw(ctx);
+            circle2.draw(ctx);
+
+            //metaball数据
+            var data=metaball(circle1, circle2, params.maxDistance);
+            if(data){
+                var cutDots=data.cutDots,
+                    ctrlDots=data.ctrlDots;
+                ctx.beginPath();
+                  ctx.moveTo(cutDots[0].x,cutDots[0].y);
+                  ctx.bezierCurveTo(ctrlDots[0].x,ctrlDots[0].y,ctrlDots[3].x,ctrlDots[3].y,cutDots[3].x,cutDots[3].y);
+                  ctx.lineTo(cutDots[2].x,cutDots[2].y);
+                  ctx.bezierCurveTo(ctrlDots[2].x,ctrlDots[2].y,ctrlDots[1].x,ctrlDots[1].y,cutDots[1].x,cutDots[1].y);
+                ctx.closePath(); 
+                ctx.fill();     
+            }
+
+            ctx.restore();            
+        }
+
+
+        function Circle(x,y,radius){
+            this.x=x;
+            this.y=y;
+            this.radius=radius;
+        }
+
+        Circle.prototype.draw=function(ctx){
+            ctx.beginPath();
+            ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+            ctx.fill();
+        };
+
+        draw();
+    </script>
+</body>
+</html>
